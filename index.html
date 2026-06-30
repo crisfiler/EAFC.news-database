@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAFC NEWS</title>
+    <style>
+        :root {
+            --bg-color: #060b16;
+            --card-bg: #0f172a;
+            --neon-green: #00ff66;
+            --neon-gold: #ffc200;
+            --border-color: #1e293b;
+            --text-color: #ffffff;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(180deg, #0f172a 0%, #060b16 100%);
+            text-align: center;
+            padding: 25px 10px;
+            border-bottom: 2px solid var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 2px;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+        header p {
+            margin: 5px 0 0 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .main-container {
+            display: flex;
+            max-width: 1300px;
+            margin: 25px auto;
+            gap: 25px;
+            padding: 0 20px;
+        }
+        /* News Section (Pastga surib ko'riladi) */
+        .news-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .news-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .news-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--neon-gold);
+        }
+        .news-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .news-content {
+            padding: 20px;
+        }
+        .news-content h2 {
+            margin: 0 0 10px 0;
+            color: var(--neon-gold);
+            font-size: 24px;
+        }
+        .news-content p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+        .news-content .date {
+            color: #64748b;
+            font-size: 12px;
+        }
+        /* Database Section (Faqat Card rasmlari) */
+        .database-section {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            align-self: flex-start;
+        }
+        .database-section h3 {
+            margin: 0 0 15px 0;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px rgba(0,255,102,0.3);
+            font-size: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .grid-database {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .grid-database::-webkit-scrollbar { width: 5px; }
+        .grid-database::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .card-img-item {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .card-img-item:hover { transform: scale(1.05); }
+
+        /* MAXFIY ADMIN PANEL MODAL OYNASI */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 11, 22, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .admin-box {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-green);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+            box-sizing: border-box;
+            margin: 20px auto;
+        }
+        .admin-box h2 { color: var(--neon-green); text-align: center; margin-top: 0; }
+        .admin-box h3 { color: var(--neon-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
+        input[type="text"], textarea {
+            width: 100%; padding: 10px; background: #060b16; border: 1px solid var(--border-color); color: white; border-radius: 6px; box-sizing: border-box;
+        }
+        .btn-panel {
+            width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
+        }
+        .btn-green { background: var(--neon-green); color: #000; }
+        .btn-gold { background: var(--neon-gold); color: #000; margin-top: 15px; }
+        .close-btn { background: #ef4444; color: white; margin-top: 15px; }
+
+        /* Pastdagi maxfiy tugma */
+        footer {
+            text-align: center;
+            padding: 30px 10px;
+            background: #0f172a;
+            margin-top: 50px;
+            border-top: 1px solid var(--border-color);
+        }
+        .secret-admin-btn {
+            background: transparent; color: #334155; border: none; font-size: 11px; cursor: pointer; text-decoration: underline;
+        }
+        .secret-admin-btn:hover { color: var(--neon-green); }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .database-section { align-self: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>EAFC NEWS</h1>
+        <p>Rasmiy Yangiliklar Tasmasi va Eksklyuziv Kartalar Database Markazi</p>
+    </header>
+
+    <div class="main-container">
+        <!-- YANGILIKLAR BO'LIMI -->
+        <div class="news-section" id="newsFeed"></div>
+
+        <!-- DATABASE BO'LIMI -->
+        <div class="database-section">
+            <h3>🗂️ KARTALAR DATABASE</h3>
+            <div class="grid-database" id="databaseGrid"></div>
+        </div>
+    </div>
+
+    <!-- INTEGRATSIYA QILINGAN MODAL ADMIN PANEL -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-box">
+            <h2>⚡ ADMIN PANEL</h2>
+            
+            <!-- YANGILIK QO'SHISH -->
+            <h3>📰 Yangi Yangilik Qo'shish</h3>
+            <div class="form-group">
+                <label>Sarlavha</label>
+                <input type="text" id="newsTitle" placeholder="Oltin To'p Favoriti Belgilandi!">
+            </div>
+            <div class="form-group">
+                <label>Maqola Matni</label>
+                <textarea id="newsText" rows="4" placeholder="Tafsilotlarni to'liq yozing..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Yangilik Rasmi</label>
+                <input type="file" id="newsImage" accept="image/*">
+            </div>
+            <button class="btn-panel btn-green" onclick="saveNews()">SAYTGA CHIQARISH</button>
+
+            <!-- KARTA QO'SHISH -->
+            <h3>🗂️ Karta Qo'shish (Faqat Rasm)</h3>
+            <div class="form-group">
+                <label>O'yinchi Karta Rasmi</label>
+                <input type="file" id="cardImage" accept="image/*">
+            </div>
+            <button class="btn-panel btn-gold" onclick="saveCard()">KARTANI DATABASEGA QO'SHISH</button>
+
+            <button class="btn-panel close-btn" onclick="closeAdmin()">Panelni Yopish</button>
+        </div>
+    </div>
+
+    <footer>
+        <p style="margin: 0 0 10px 0; color: #64748b; font-size: 13px;">&copy; 2026 EAFC NEWS. Barcha huquqlar himoyalangan.</p>
+        <!-- MAXFIY ADMIN TUGMASI -->
+        <button class="secret-admin-btn" onclick="openAdmin()">System Login (Admin)</button>
+    </footer>
+
+    <script>
+        const ADMIN_PIN = "7777"; // Kirish paroli
+
+        // Ma'lumotlarni render qilish
+        function loadEAFCData() {
+            const newsData = JSON.parse(localStorage.getItem('eafc_news')) || [];
+            const cardsData = JSON.parse(localStorage.getItem('eafc_cards')) || [];
+
+            const newsFeed = document.getElementById('newsFeed');
+            const databaseGrid = document.getElementById('databaseGrid');
+
+            if(newsData.length === 0) {
+                newsFeed.innerHTML = '<div style="text-align:center; padding:50px; color:#64748b;">Hozircha hech qanday yangilik joylanmagan.</div>';
+            } else {
+                newsFeed.innerHTML = newsData.map(item => `
+                    <div class="news-item">
+                        ${item.image ? `<img src="${item.image}" class="news-img" alt="news">` : ''}
+                        <div class="news-content">
+                            <h2>${item.title}</h2>
+                            <p>${item.text}</p>
+                            <div class="date">Sana: ${item.date}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if(cardsData.length === 0) {
+                databaseGrid.innerHTML = '<div style="color:#64748b; text-align:center; padding:20px;">Baza boʻsh.</div>';
+            } else {
+                databaseGrid.innerHTML = cardsData.map(imgSrc => `
+                    <img src="${imgSrc}" class="card-img-item" alt="EAFC Card">
+                `).join('');
+            }
+        }
+
+        // Admin panelni ochish (Parol so'raydi)
+        function openAdmin() {
+            const pass = prompt("Xavfsizlik tizimi! Admin PIN-kodni kiriting:");
+            if (pass === ADMIN_PIN) {
+                document.getElementById('adminModal').style.display = 'flex';
+            } else if (pass !== null) {
+                alert("PIN-kod noto'g'ri!");
+            }
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Yangilik saqlash
+        async function saveNews() {
+            const title = document.getElementById('newsTitle').value;
+            const text = document.getElementById('newsText').value;
+            const imgFile = document.getElementById('newsImage').files[0];
+            const date = new Date().toLocaleString('uz-UZ');
+
+            if(!title || !text) return alert("Sarlavha va matn majburiy!");
+
+            let imageBase64 = "";
+            if(imgFile) imageBase64 = await getBase64(imgFile);
+
+            const newsList = JSON.parse(localStorage.getItem('eafc_news')) || [];
+            newsList.unshift({ title, text, image: imageBase64, date });
+            localStorage.setItem('eafc_news', JSON.stringify(newsList));
+
+            alert("Yangilik qo'shildi!");
+            loadEAFCData(); // Sahifani kodni yangilamasdan yurgizish
+            
+            document.getElementById('newsTitle').value = "";
+            document.getElementById('newsText').value = "";
+            document.getElementById('newsImage').value = "";
+        }
+
+        // Karta saqlash
+        async function saveCard() {
+            const cardFile = document.getElementById('cardImage').files[0];
+            if(!cardFile) return alert("Karta rasmini yuklang!");
+
+            const cardBase64 = await getBase64(cardFile);
+
+            const cardsList = JSON.parse(localStorage.getItem('eafc_cards')) || [];
+            cardsList.unshift(cardBase64);
+            localStorage.setItem('eafc_cards', JSON.stringify(cardsList));
+
+            alert("Karta databasega qo'shildi!");
+            loadEAFCData();
+            document.getElementById('cardImage').value = "";
+        }
+
+        window.onload = loadEAFCData;
+    </script>
+</body>
+</html>
